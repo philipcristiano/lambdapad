@@ -1,10 +1,11 @@
 PROJECT = lpad
 
-DEPS = jiffy erlydtl getopt
+DEPS = jiffy erlydtl getopt restc
 
 dep_jiffy = https://github.com/davisp/jiffy.git 0.9.0
 dep_erlydtl = https://github.com/erlydtl/erlydtl.git 0.8.0
 dep_getopt = https://github.com/jcomellas/getopt.git
+dep_restc = https://github.com/kivra/restclient.git 0.3.3
 
 ERLC_OPTS = +debug_info
 COMPILE_FIRST = lpad_generator lpad_data_loader
