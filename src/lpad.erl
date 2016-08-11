@@ -113,6 +113,7 @@ init_data_loaders(_Index) ->
     [lpad_eterm,
      lpad_json,
      lpad_markdown,
+     lpad_contentful,
      lpad_guess].
 
 data_specs(Index, Args) ->
