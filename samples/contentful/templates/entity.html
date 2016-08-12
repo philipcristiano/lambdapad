@@ -1,0 +1,8 @@
+<html>
+  <p>Look at the pretty Entity {{entity}}!</p>
+  <ul>
+    {% for entry in entries %}
+    <li><a href="{{entry.amazon_product_link}}">{{ entry.name }}</a>
+    {% endfor %}
+  </ul>
+</html>
