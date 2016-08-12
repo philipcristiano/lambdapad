@@ -28,10 +28,12 @@ get_entries(Data) ->
     parse_items(Items).
 
 parse_items([{H}|T]) ->
-    io:format("Item: ~p~n", [H]),
     {Fields} = proplists:get_value(<<"fields">>, H),
-    io:format("Fields: ~p~n", [Fields]),
-    [Fields |parse_items(T)];
+    {Sys} = proplists:get_value(<<"sys">>, H),
+    Id = proplists:get_value(<<"id">>, Sys),
+    Item = [{<<"id">>, Id},
+            {<<"fields">>, Fields}],
+    [Item |parse_items(T)];
 parse_items([]) ->
     [].
 
@@ -48,7 +50,6 @@ structs_to_proplists(Other) ->
 
 handle_data_spec({contentful, AccessToken, Space}, {'$root', Sources}) ->
     {ok, _} = application:ensure_all_started(hackney),
-    io:format("Doing a thing 3.1 ~n"),
 
     URL = restc:construct_url(["https://cdn.contentful.com/spaces/",
                               Space,
@@ -59,10 +60,7 @@ handle_data_spec({contentful, AccessToken, Space}, {'$root', Sources}) ->
     Response = jiffy:decode(Body),
     Entries = get_entries(Response),
 
-    io:format("URL: ~p~n", [URL]),
     Data = {[{<<"entries">>, Entries}], Sources},
-    io:format("Data ~p~n", [Data]),
     {ok, Data};
 handle_data_spec(_, DState) ->
-    io:format("Doing a thing 4 ~n"),
     {continue, DState}.
