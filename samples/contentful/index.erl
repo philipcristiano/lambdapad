@@ -4,10 +4,15 @@
 data(_) -> {contentful, os:getenv("CONTENTFUL_TOKEN"), "y8ikfrvvrqw5"}.
 
 site(Data) ->
-    Static = {"site/index.html", {template, "templates/index.html"}},
+    Static = [{"site/index.html", {template, "templates/index.html"}},
+              {"site/js/*.js", {files, "site_src/js/*.js"}},
+              {"site/css/*.css", {files, "site_src/css/*.css"}},
+              {"site/fonts/*.*", {files, "site_src/fonts/*.*"}}
+    ],
+
     Entries = proplists:get_value(<<"entries">>, Data),
     EntityPages = entity_pages(Entries),
-    Site = [Static | EntityPages],
+    Site = Static ++ EntityPages,
     Site.
 
 entity_pages([Entity | T]) ->

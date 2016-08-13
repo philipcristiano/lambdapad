@@ -1,8 +1,11 @@
-<html>
-  <p>Look at the pretty Entity {{entity}}!</p>
-  <ul>
-    {% for entry in entries %}
-    <li><a href="{{entry.amazon_product_link}}">{{ entry.name }}</a>
-    {% endfor %}
-  </ul>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+  <div>
+    <h1> {{ entity.fields.name }} </h1>
+    <ul>
+        <li><a href="{{entity.fields.amazon_product_link}}">Amazon</a>
+    </ul>
+  </div>
+
+{% endblock %}
