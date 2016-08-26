@@ -44,13 +44,8 @@ structs_to_proplists({Proplist}) ->
 structs_to_proplists(Other) ->
     Other.
 
-%%%===================================================================
-%%% Data loader support
-%%%===================================================================
-
-handle_data_spec({contentful, AccessToken, Space}, {'$root', Sources}) ->
+get_content(AccessToken, Space) ->
     {ok, _} = application:ensure_all_started(hackney),
-
     URL = restc:construct_url(["https://cdn.contentful.com/spaces/",
                               Space,
                               "/entries"],
@@ -59,8 +54,20 @@ handle_data_spec({contentful, AccessToken, Space}, {'$root', Sources}) ->
     {ok, 200, _Headers, Body} = restc:request(get, URL),
     Response = jiffy:decode(Body),
     Entries = get_entries(Response),
+    [{<<"entries">>, Entries}].
 
-    Data = {[{<<"entries">>, Entries}], Sources},
+%%%===================================================================
+%%% Data loader support
+%%%===================================================================
+handle_data_spec({Name, {contentful, AccessToken, Space}}, {Data, Sources}) ->
+    Content = get_content(AccessToken, Space),
+    {ok, {[{Name, Content}|Data], Sources}};
+
+handle_data_spec({contentful, AccessToken, Space}, {'$root', Sources}) ->
+    Content = get_content(AccessToken, Space),
+    Data = {Content, Sources},
     {ok, Data};
-handle_data_spec(_, DState) ->
+
+handle_data_spec(D, DState) ->
+    io:format("Contentful: Unhandled thing ~p~n", [D]),
     {continue, DState}.
